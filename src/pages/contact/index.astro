@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getSiteSettings } from '../../lib/sanity';
+
+const { artistName, contactIntro, contactEmails } = await getSiteSettings();
+---
+
+<Base title="Contact" description={`Get in touch with ${artistName}.`}>
+  <div class="wrap page">
+    <div class="intro">
+      <p class="eyebrow">Get in touch</p>
+      <h1 class="page-title">Contact</h1>
+      {contactIntro && <p class="lede">{contactIntro}</p>}
+
+      {
+        contactEmails.length > 0 && (
+          <dl class="emails">
+            {contactEmails.map((c) => (
+              <div>
+                <dt>{c.label}</dt>
+                <dd><a href={`mailto:${c.email}`}>{c.email}</a></dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+    </div>
+
+    <!-- Netlify Forms: submissions show up in the Netlify dashboard (Forms tab). -->
+    <form
+      class="form"
+      name="contact"
+      method="POST"
+      action="/contact/thanks"
+      data-netlify="true"
+      netlify-honeypot="company"
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <p class="visually-hidden">
+        <label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label>
+      </p>
+
+      <label>
+        <span>Name</span>
+        <input name="name" type="text" autocomplete="name" required />
+      </label>
+      <label>
+        <span>Email</span>
+        <input name="email" type="email" autocomplete="email" required />
+      </label>
+      <label>
+        <span>Message</span>
+        <textarea name="message" rows="6" required></textarea>
+      </label>
+      <button class="button" type="submit">Send</button>
+    </form>
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: grid;
+    gap: 3rem;
+    padding-block: clamp(2.5rem, 7vw, 5rem);
+  }
+
+  .lede { margin: 1.25rem 0 0; font-size: 1.125rem; max-width: 30ch; }
+
+  .emails { margin: 2rem 0 0; display: grid; gap: 1rem; }
+  .emails dt {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .emails dd { margin: 0.15rem 0 0; font-family: var(--font-serif); font-size: 1.5rem; }
+
+  .form { display: grid; gap: 1.25rem; align-content: start; }
+  .form label { display: grid; gap: 0.4rem; }
+  .form label > span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .form input,
+  .form textarea {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    background: color-mix(in srgb, var(--paper-light) 55%, var(--paper));
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    font: inherit;
+  }
+  .form input:focus,
+  .form textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .form textarea { resize: vertical; }
+  .form .button { justify-self: start; }
+
+  @media (min-width: 52rem) {
+    .page { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 5rem; }
+  }
+</style>

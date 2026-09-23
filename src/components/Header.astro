@@ -1,0 +1,87 @@
+---
+import InstagramIcon from './InstagramIcon.astro';
+import { getSiteSettings, getUpcomingShows } from '../lib/sanity';
+
+const { artistName, instagramUrl } = await getSiteSettings();
+const shows = await getUpcomingShows();
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+// "Live" only appears in the nav once there's at least one upcoming show.
+// The /live page itself always exists.
+const nav = [
+  { href: '/#about', label: 'About' },
+  ...(shows.length ? [{ href: '/live', label: 'Live' }] : []),
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="name" href="/">{artistName}</a>
+    <nav aria-label="Main">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          instagramUrl && (
+            <li>
+              <a class="icon" href={instagramUrl} rel="noopener me" aria-label={`${artistName} on Instagram`}>
+                <InstagramIcon />
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header { border-bottom: 1px solid var(--rule); }
+
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.1rem;
+  }
+
+  .name {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  nav a {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  nav a:hover,
+  nav a[aria-current='page'] { text-decoration: underline; }
+
+  .icon { display: flex; padding: 0.25rem; margin: -0.25rem; }
+</style>

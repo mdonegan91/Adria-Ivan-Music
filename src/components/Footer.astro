@@ -1,0 +1,73 @@
+---
+import InstagramIcon from './InstagramIcon.astro';
+import { getSiteSettings } from '../lib/sanity';
+
+const { artistName, instagramUrl, socialLinks } = await getSiteSettings();
+---
+
+<footer class="site-footer">
+  <div class="wrap bar">
+    <ul class="links">
+      {
+        instagramUrl && (
+          <li>
+            <a href={instagramUrl} rel="noopener me">
+              <InstagramIcon size={18} />
+              Instagram
+            </a>
+          </li>
+        )
+      }
+      {
+        socialLinks.map((link) => (
+          <li>
+            <a href={link.url} rel="noopener me">{link.label}</a>
+          </li>
+        ))
+      }
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+    <p class="copyright">© {new Date().getFullYear()} {artistName}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--rule);
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding-block: 1.5rem;
+  }
+
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    text-decoration: none;
+  }
+  .links a:hover { text-decoration: underline; }
+
+  .copyright { margin: 0; }
+</style>

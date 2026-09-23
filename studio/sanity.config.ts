@@ -23,6 +23,7 @@ export default defineConfig({
               .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
             S.divider(),
             S.documentTypeListItem('release').title('Releases'),
+            S.documentTypeListItem('show').title('Shows'),
           ]),
     }),
     visionTool(),

@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import InstagramIcon from '../components/InstagramIcon.astro';
+import { formatDate, getSiteSettings, getUpcomingShows } from '../lib/sanity';
+
+const { artistName, instagramUrl } = await getSiteSettings();
+const shows = await getUpcomingShows();
+---
+
+<Base title="Live" description={`Upcoming shows from ${artistName}.`}>
+  <div class="wrap page">
+    <p class="eyebrow">Tour dates</p>
+    <h1 class="page-title">Live</h1>
+
+    {
+      shows.length > 0 ? (
+        <ol class="shows">
+          {shows.map((show) => (
+            <li class="show">
+              <time class="when" datetime={show.date}>
+                <span class="month">{formatDate(show.date, { month: 'short' })}</span>
+                <span class="day">{formatDate(show.date, { day: 'numeric' })}</span>
+              </time>
+              <div class="where">
+                <p class="venue">{show.venue}</p>
+                <p class="city">
+                  {show.city}
+                  {show.note && <span class="note"> · {show.note}</span>}
+                </p>
+              </div>
+              <div class="tix">
+                {show.soldOut ? (
+                  <span class="sold-out">Sold out</span>
+                ) : show.ticketUrl ? (
+                  <a class="button small" href={show.ticketUrl} rel="noopener">
+                    Tickets<span class="visually-hidden"> for {show.venue}, {formatDate(show.date, { month: 'long', day: 'numeric' })}</span>
+                  </a>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div class="empty">
+          <p>No shows announced yet.</p>
+          {instagramUrl && (
+            <p>
+              <a href={instagramUrl} rel="noopener">
+                <InstagramIcon size={18} /> Follow on Instagram
+              </a>{' '}
+              for dates as they’re added.
+            </p>
+          )}
+        </div>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .page { padding-block: clamp(2.5rem, 7vw, 5rem); }
+
+  .shows { list-style: none; margin: 3rem 0 0; padding: 0; border-top: 1px solid var(--rule); }
+
+  .show {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .when { display: flex; flex-direction: column; line-height: 1; text-align: center; }
+  .month { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+  .day { font-family: var(--font-serif); font-size: 2.25rem; }
+
+  .venue { margin: 0; font-family: var(--font-serif); font-size: 1.625rem; line-height: 1.1; }
+  .city { margin: 0.2rem 0 0; color: var(--ink-soft); }
+
+  .tix { grid-column: 2; }
+  .button.small { padding: 0.7rem 1.1rem; font-size: 0.8125rem; }
+  .sold-out { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
+
+  @media (min-width: 40rem) {
+    .show { grid-template-columns: 5rem 1fr auto; }
+    .tix { grid-column: auto; }
+  }
+
+  .empty { margin-top: 2.5rem; font-size: 1.125rem; }
+  .empty p { margin: 0 0 0.5rem; }
+  .empty a { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
