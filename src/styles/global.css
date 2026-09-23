@@ -1,0 +1,52 @@
+@import '@fontsource/im-fell-english/400.css';
+@import '@fontsource/im-fell-english/400-italic.css';
+@import '@fontsource/im-fell-english-sc/400.css';
+@import '@fontsource/eb-garamond/400.css';
+@import '@fontsource/eb-garamond/500.css';
+
+/* Palette sampled directly from the album art */
+:root {
+  --paper: #ac9683;       /* cover background */
+  --paper-light: #c2af9d; /* hover / subtle fills */
+  --ink: #452b13;         /* engraving ink */
+  --ink-soft: #5e4128;    /* secondary text */
+  --rule: color-mix(in srgb, var(--ink) 55%, transparent);
+
+  --font-display: 'IM Fell English SC', 'IM Fell English', Georgia, serif;
+  --font-title: 'IM Fell English', Georgia, serif;
+  --font-body: 'EB Garamond', Garamond, Georgia, serif;
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --maxw: 72rem;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+::selection { background: var(--ink); color: var(--paper); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}

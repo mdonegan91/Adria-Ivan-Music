@@ -1,0 +1,198 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSiteContent } from '../lib/sanity';
+
+const { artistName, tagline, release, socialLinks } = await getSiteContent();
+
+const date = release.releaseDate
+  ? new Date(`${release.releaseDate}T12:00:00Z`).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+  : null;
+
+const pageTitle = `${artistName} — ${release.title}`;
+const description = `${release.title}, the new album from ${artistName}. ${release.ctaLabel}.`;
+---
+
+<Base title={pageTitle} description={description}>
+  <div class="frame">
+    <header class="masthead">
+      <h1 class="artist">{artistName}</h1>
+      {tagline && <p class="tagline">{tagline}</p>}
+    </header>
+
+    <main class="release">
+      <figure class="cover">
+        {
+          release.coverUrl ? (
+            <img src={release.coverUrl} alt={release.coverAlt} width="1600" height="1600" fetchpriority="high" />
+          ) : (
+            <picture>
+              <source srcset="/images/album-cover.webp" type="image/webp" />
+              <img src="/images/album-cover.jpg" alt={release.coverAlt} width="1600" height="1600" fetchpriority="high" />
+            </picture>
+          )
+        }
+      </figure>
+
+      <section class="details" aria-labelledby="release-title">
+        <p class="eyebrow">The new album</p>
+        <h2 id="release-title" class="title">{release.title}</h2>
+        {date && <p class="date">Out <time datetime={release.releaseDate ?? undefined}>{date}</time></p>}
+        <p class="fleuron" aria-hidden="true">❦</p>
+        {release.description && <p class="description">{release.description}</p>}
+        <a class="cta" href={release.bandcampUrl} rel="noopener">
+          {release.ctaLabel}
+        </a>
+      </section>
+    </main>
+
+    <footer class="footer">
+      {
+        socialLinks.length > 0 && (
+          <ul class="social">
+            {socialLinks.map((link) => (
+              <li>
+                <a href={link.url} rel="noopener me">{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p class="copyright">© {new Date().getFullYear()} {artistName}</p>
+    </footer>
+  </div>
+</Base>
+
+<style>
+  /* Double-rule border, echoing the frame around the engraving */
+  .frame {
+    max-width: var(--maxw);
+    min-height: calc(100svh - 2 * var(--gutter));
+    margin: var(--gutter) auto;
+    padding: clamp(1.5rem, 5vw, 4rem) clamp(1.25rem, 5vw, 4rem);
+    border: 3px double var(--ink);
+    outline: 1px solid var(--rule);
+    outline-offset: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 5vw, 3.5rem);
+  }
+  @media (max-width: 80rem) {
+    .frame { margin-inline: var(--gutter); }
+  }
+
+  .masthead { text-align: center; }
+
+  .artist {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  .tagline {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-title);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .release {
+    flex: 1;
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .cover { margin: 0; }
+  /* The cover's background matches --paper, so the engraving sits directly on the page */
+  .cover img { width: 100%; }
+
+  .details { text-align: center; }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-title);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.05;
+  }
+
+  .date { margin: 0.75rem 0 0; font-size: 1.2rem; }
+
+  .fleuron {
+    margin: 1.25rem 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--ink-soft);
+  }
+
+  .description {
+    max-width: 34ch;
+    margin: 0 auto 1.75rem;
+  }
+
+  .cta {
+    display: inline-block;
+    padding: 0.9rem 1.75rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    /* inner hairline, like the engraving's frame */
+    box-shadow: inset 0 0 0 4px var(--ink), inset 0 0 0 5px var(--paper);
+    transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  }
+  .cta:hover {
+    background: var(--paper-light);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--ink), inset 0 0 0 4px var(--paper-light), inset 0 0 0 5px var(--ink);
+  }
+
+  @media (min-width: 52rem) {
+    .release { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+    .details { text-align: left; }
+    .description { margin-inline: 0; }
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+  }
+  .social {
+    list-style: none;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+  }
+  .copyright { margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta { transition: none; }
+  }
+</style>
