@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import Player from '../components/Player.astro';
 import { formatDate, getFeaturedRelease, getSiteSettings } from '../lib/sanity';
 
-const { artistName, tagline, aboutHtml } = await getSiteSettings();
+const { artistName, tagline } = await getSiteSettings();
 const release = await getFeaturedRelease();
 
 const date = release.releaseDate
@@ -31,19 +32,9 @@ const date = release.releaseDate
       {date && <p class="date">Out <time datetime={release.releaseDate ?? undefined}>{date}</time></p>}
       {release.description && <p class="description">{release.description}</p>}
       <a class="button" href={release.bandcampUrl} rel="noopener">{release.ctaLabel}</a>
+      {release.songUrl && <Player src={release.songUrl} title={release.songTitle ?? release.title} />}
     </div>
   </section>
-
-  {
-    aboutHtml && (
-      <section id="about" class="about" aria-labelledby="about-title">
-        <div class="wrap about-grid">
-          <h2 id="about-title" class="section-title">About</h2>
-          <div class="prose" set:html={aboutHtml} />
-        </div>
-      </section>
-    )
-  }
 </Base>
 
 <style>
@@ -63,25 +54,9 @@ const date = release.releaseDate
   .description { margin: 1rem auto 0; max-width: 34ch; }
   .button { margin-top: 2rem; }
 
-  .about {
-    border-top: 1px solid var(--rule);
-    padding-block: clamp(3rem, 8vw, 6rem);
-    scroll-margin-top: 1rem;
-  }
-  .about-grid { display: grid; gap: 1.5rem; }
-  .section-title {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(2.5rem, 6vw, 3.5rem);
-    line-height: 1;
-  }
-  .about .prose { font-size: 1.125rem; }
-
   @media (min-width: 52rem) {
     .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
     .details { text-align: left; }
     .description { margin-inline: 0; }
-    .about-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 4rem; }
   }
 </style>

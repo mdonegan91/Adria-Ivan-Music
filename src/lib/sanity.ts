@@ -32,9 +32,8 @@ let showsPromise: Promise<Show[]> | undefined;
 export function getSiteSettings(): Promise<SiteSettings> {
   return (settingsPromise ??= (async () => {
     const d = await query<any>(`*[_type == "siteSettings"][0]{
-      artistName, tagline, instagramUrl, about, contactIntro,
-      socialLinks[]{ label, url },
-      contactEmails[]{ label, email }
+      artistName, tagline, instagramUrl, about,
+      socialLinks[]{ label, url }
     }`);
     if (!d) return fallbackSettings;
     return {
@@ -43,8 +42,6 @@ export function getSiteSettings(): Promise<SiteSettings> {
       instagramUrl: d.instagramUrl ?? null,
       socialLinks: d.socialLinks ?? [],
       aboutHtml: d.about?.length ? toHTML(d.about) : null,
-      contactIntro: d.contactIntro ?? null,
-      contactEmails: d.contactEmails ?? [],
     };
   })());
 }
@@ -52,7 +49,7 @@ export function getSiteSettings(): Promise<SiteSettings> {
 export function getFeaturedRelease(): Promise<Release> {
   return (releasePromise ??= (async () => {
     const r = await query<any>(`*[_type == "siteSettings"][0].featuredRelease->{
-      title, releaseDate, description, bandcampUrl, ctaLabel, cover, "coverAlt": cover.alt
+      title, releaseDate, description, bandcampUrl, ctaLabel, "songUrl": song.asset->url, "songTitle": song.title, cover, "coverAlt": cover.alt
     }`);
     if (!r) return fallbackRelease;
     return {
@@ -61,6 +58,8 @@ export function getFeaturedRelease(): Promise<Release> {
       description: r.description ?? null,
       bandcampUrl: r.bandcampUrl || fallbackRelease.bandcampUrl,
       ctaLabel: r.ctaLabel || fallbackRelease.ctaLabel,
+      songUrl: r.songUrl ?? null,
+      songTitle: r.songTitle ?? null,
       coverUrl: r.cover && builder ? builder.image(r.cover).width(1600).auto('format').url() : null,
       coverAlt: r.coverAlt || fallbackRelease.coverAlt,
     };

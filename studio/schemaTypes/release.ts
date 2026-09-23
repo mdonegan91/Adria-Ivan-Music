@@ -38,8 +38,18 @@ export const release = defineType({
       name: 'ctaLabel',
       title: 'Button label',
       type: 'string',
-      initialValue: 'Pre-order on Bandcamp',
-      description: 'Change to "Buy on Bandcamp" after release day.',
+      initialValue: 'Pre-order',
+      description: 'Change to "Buy" after release day.',
+    }),
+    defineField({
+      name: 'song',
+      title: 'Song to play',
+      type: 'file',
+      options: { accept: 'audio/mpeg,audio/mp4,audio/*' },
+      description: 'Optional. An MP3 (full song or a short preview) for the player on the home page.',
+      fields: [
+        defineField({ name: 'title', title: 'Song title', type: 'string', validation: (r) => r.required() }),
+      ],
     }),
   ],
   preview: {

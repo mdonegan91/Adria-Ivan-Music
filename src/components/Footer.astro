@@ -11,9 +11,8 @@ const { artistName, instagramUrl, socialLinks } = await getSiteSettings();
       {
         instagramUrl && (
           <li>
-            <a href={instagramUrl} rel="noopener me">
+            <a href={instagramUrl} rel="noopener me" aria-label={`${artistName} on Instagram`}>
               <InstagramIcon size={18} />
-              Instagram
             </a>
           </li>
         )
@@ -25,7 +24,6 @@ const { artistName, instagramUrl, socialLinks } = await getSiteSettings();
           </li>
         ))
       }
-      <li><a href="/contact">Contact</a></li>
     </ul>
     <p class="copyright">© {new Date().getFullYear()} {artistName}</p>
   </div>

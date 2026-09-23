@@ -1,10 +1,10 @@
 # Adria Ivan Music
 
-Website for Adria Ivan. The home page has the new album with a Bandcamp pre-order link and an About section. There are also Live and Contact pages.
+Website for Adria Ivan. The home page has the new album with a Bandcamp pre-order link. There are also About and Live pages.
 
 - **Astro**: static site
 - **Sanity**: content (`/studio`), hosted separately at `adria-ivan.sanity.studio`
-- **Netlify**: hosting and the contact form, rebuilt automatically when content is published in Sanity
+- **Netlify**: hosting, rebuilt automatically when content is published in Sanity
 
 The site builds and runs **without Sanity configured**. It falls back to `src/lib/fallback.ts` and the cover image in `public/images/`.
 
@@ -12,12 +12,11 @@ The site builds and runs **without Sanity configured**. It falls back to `src/li
 
 | Route              | What's on it                                                                 |
 | ------------------ | ---------------------------------------------------------------------------- |
-| `/`                | Featured release (cover, title, date, Bandcamp button) and the About section |
+| `/`                | Featured release (cover, title, date and Bandcamp button)                    |
+| `/about`           | Photo (`public/images/about.jpg`) and the About text                         |
 | `/live`            | Upcoming shows, or a "no shows yet" message with an Instagram link           |
-| `/contact`         | Contact emails and a Netlify contact form                                    |
-| `/contact/thanks`  | Page shown after the form is submitted                                       |
 
-The header has About, Live, Contact and an Instagram icon. **Live only appears in the nav once at least one upcoming show exists.** The page still works at `/live`. The footer has Instagram, any other links and Contact.
+The header has About, Live and an Instagram icon. **Live only appears in the nav once at least one upcoming show exists.** The page still works at `/live`. The footer has an Instagram icon and any other links.
 
 ## Local development
 
@@ -38,7 +37,6 @@ npm run dev            # http://localhost:4321
    - **Site settings**: fill in these tabs:
      - General: pick the featured release, add the Instagram URL and any other links.
      - About: add the About text.
-     - Contact: add the intro line and the booking and press emails.
    - **Shows**: add a show whenever dates are announced. Past dates are hidden automatically.
 5. At sanity.io/manage → API → CORS origins, add `http://localhost:3333` and your Studio URL. The site reads a public dataset, so it doesn't need a token.
 
@@ -48,7 +46,6 @@ npm run dev            # http://localhost:4321
 2. Under Site settings → Environment variables, add `PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET=production`.
 3. Under Build & deploy → Build hooks, create a hook called "Sanity publish" and copy its URL.
 4. At sanity.io/manage → API → Webhooks, add a webhook that POSTs to that URL on create, update and delete, filtered to `_type in ["release", "siteSettings", "show"]`.
-5. **Contact form**: Netlify detects the form automatically on the first deploy. Submissions appear under the **Forms** tab. To get them by email, go to Forms → Form notifications and add an email notification.
 
 After that, publishing in the Studio rebuilds the live site in about a minute.
 
@@ -75,9 +72,9 @@ The cover's background has been flattened to exactly `--paper`, so the artwork s
 
 ```
 src/
-  pages/               index, live, contact/index, contact/thanks
+  pages/               index, about, live
   layouts/Base.astro   <head>, meta and OG tags, header and footer
-  components/          Header, Footer, InstagramIcon
+  components/          Header, Footer, InstagramIcon, Player
   lib/sanity.ts        Sanity client and GROQ queries (memoized, never throw)
   lib/fallback.ts      default content when Sanity isn't set up
   lib/types.ts         shared types

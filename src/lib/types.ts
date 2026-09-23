@@ -3,11 +3,6 @@ export interface SocialLink {
   url: string;
 }
 
-export interface ContactEmail {
-  label: string; // e.g. "Booking", "Press"
-  email: string;
-}
-
 export interface SiteSettings {
   artistName: string;
   tagline: string | null;
@@ -16,8 +11,6 @@ export interface SiteSettings {
   socialLinks: SocialLink[];
   /** About text, already rendered to HTML from Portable Text. */
   aboutHtml: string | null;
-  contactIntro: string | null;
-  contactEmails: ContactEmail[];
 }
 
 export interface Release {
@@ -26,6 +19,9 @@ export interface Release {
   description: string | null;
   bandcampUrl: string;
   ctaLabel: string;
+  /** Audio file for the home-page player, and the song's name. No file → no player. */
+  songUrl: string | null;
+  songTitle: string | null;
   coverUrl: string | null;
   coverAlt: string;
 }

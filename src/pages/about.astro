@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSiteSettings } from '../lib/sanity';
+
+const { artistName, aboutHtml } = await getSiteSettings();
+---
+
+<Base title="About" description={`About ${artistName}.`}>
+  <div class="wrap page">
+    <figure class="photo">
+      <!-- The engraved frame from the album cover, with the photo set inside it -->
+      <div class="framed">
+        <img class="frame" src="/images/about-frame.jpg" alt="" width="1000" height="1000" />
+        <div class="portrait">
+          <img
+            src="/images/about.jpg"
+            alt={`${artistName} singing and playing bass on stage, in black and white.`}
+            width="511"
+            height="517"
+          />
+        </div>
+      </div>
+    </figure>
+
+    <div class="text">
+      <h1 class="page-title">About</h1>
+      {aboutHtml && <div class="prose" set:html={aboutHtml} />}
+    </div>
+  </div>
+</Base>
+
+<style>
+  /* Same grid and spacing as the home page hero, so the frame lines up with the cover's */
+  .page {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    padding-block: clamp(2rem, 6vw, 5rem);
+  }
+
+  /* A square the size of the home-page cover. The frame crop starts 210px into the 1600px
+     cover and is 1180px wide, so it sits at the same place and size as on the cover. */
+  .photo { position: relative; aspect-ratio: 1; margin: 0; }
+  .framed { position: absolute; inset: calc(210 / 1600 * 100%); }
+  /* The frame's background is the same --paper as the cover, so it blends into the page */
+  .frame { width: 100%; }
+  /* Inset so the frame's branches show around the photo. The paper backing hides the knights behind it. */
+  .portrait {
+    position: absolute;
+    inset: 4.5%;
+    background: var(--paper);
+    isolation: isolate;
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Multiply lets the paper show through the photo's highlights, like a print on the page */
+    mix-blend-mode: multiply;
+  }
+
+  .prose { margin-top: 2rem; font-size: 1rem; }
+
+  @media (min-width: 52rem) {
+    .page { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; }
+  }
+</style>

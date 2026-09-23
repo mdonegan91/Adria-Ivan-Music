@@ -10,9 +10,8 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 // "Live" only appears in the nav once there's at least one upcoming show.
 // The /live page itself always exists.
 const nav = [
-  { href: '/#about', label: 'About' },
+  { href: '/about', label: 'About' },
   ...(shows.length ? [{ href: '/live', label: 'Live' }] : []),
-  { href: '/contact', label: 'Contact' },
 ];
 ---
 

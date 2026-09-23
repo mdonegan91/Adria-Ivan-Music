@@ -1,0 +1,184 @@
+---
+// A small audio player styled like the rest of the site: square play button,
+// song title in the serif, hairline progress bar.
+interface Props {
+  src: string;
+  title: string;
+}
+
+const { src, title } = Astro.props;
+---
+
+<div class="player" data-player>
+  <audio src={src} preload="metadata"></audio>
+
+  <button class="toggle" type="button" aria-label={`Play ${title}`} data-title={title}>
+    <svg class="icon-play" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+      <path d="M4 2.5v11l9-5.5z" fill="currentColor" />
+    </svg>
+    <svg class="icon-pause" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+      <path d="M4 2.5h3v11H4zM9 2.5h3v11H9z" fill="currentColor" />
+    </svg>
+  </button>
+
+  <div class="body">
+    <p class="label">Listen</p>
+    <p class="title">{title}</p>
+    <div class="progress">
+      <input class="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label={`Seek in ${title}`} />
+      <span class="time" aria-hidden="true"><span class="current">0:00</span> / <span class="duration">0:00</span></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .player {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 26rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    text-align: left;
+  }
+
+  .toggle {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    padding: 0;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+  }
+  .toggle:hover { background: var(--ink); color: var(--paper); }
+  .icon-pause { display: none; }
+  .player.playing .icon-play { display: none; }
+  .player.playing .icon-pause { display: block; }
+
+  .body { flex: 1; min-width: 0; }
+
+  .label {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .title {
+    margin: 0.1rem 0 0;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .progress { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.6rem; }
+
+  .time {
+    flex: none;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+  }
+
+  /* Hairline track; the played part is solid ink. The hard stop is a two-tone fill, not a visual gradient. */
+  .seek {
+    --pct: 0%;
+    flex: 1;
+    min-width: 0;
+    height: 1rem;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    cursor: pointer;
+  }
+  .seek::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(to right, var(--ink) var(--pct), var(--rule) var(--pct));
+  }
+  .seek::-moz-range-track { height: 2px; background: var(--rule); }
+  .seek::-moz-range-progress { height: 2px; background: var(--ink); }
+  .seek::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    margin-top: -4px;
+    background: var(--ink);
+    border: 0;
+    border-radius: 0;
+  }
+  .seek::-moz-range-thumb { width: 10px; height: 10px; background: var(--ink); border: 0; border-radius: 0; }
+
+  /* Centred under the button on mobile, like the rest of the details column */
+  @media (max-width: 51.99rem) {
+    .player { margin-inline: auto; }
+  }
+</style>
+
+<script>
+  const fmt = (s: number) => {
+    if (!Number.isFinite(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-player]').forEach((player) => {
+    const audio = player.querySelector('audio')!;
+    const toggle = player.querySelector<HTMLButtonElement>('.toggle')!;
+    const seek = player.querySelector<HTMLInputElement>('.seek')!;
+    const current = player.querySelector('.current')!;
+    const duration = player.querySelector('.duration')!;
+    const title = toggle.dataset.title;
+    let seeking = false;
+
+    const render = () => {
+      const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      if (!seeking) seek.value = String(pct);
+      seek.style.setProperty('--pct', `${seek.value}%`);
+      current.textContent = fmt(audio.currentTime);
+      seek.setAttribute('aria-valuetext', `${fmt(audio.currentTime)} of ${fmt(audio.duration)}`);
+    };
+
+    const setPlaying = (playing: boolean) => {
+      player.classList.toggle('playing', playing);
+      toggle.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${title}`);
+    };
+
+    toggle.addEventListener('click', () => (audio.paused ? audio.play() : audio.pause()));
+    audio.addEventListener('play', () => setPlaying(true));
+    audio.addEventListener('pause', () => setPlaying(false));
+    audio.addEventListener('ended', () => {
+      audio.currentTime = 0;
+      render();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      duration.textContent = fmt(audio.duration);
+      render();
+    });
+    audio.addEventListener('timeupdate', render);
+
+    seek.addEventListener('input', () => {
+      seeking = true;
+      seek.style.setProperty('--pct', `${seek.value}%`);
+      if (audio.duration) current.textContent = fmt((Number(seek.value) / 100) * audio.duration);
+    });
+    seek.addEventListener('change', () => {
+      if (audio.duration) audio.currentTime = (Number(seek.value) / 100) * audio.duration;
+      seeking = false;
+    });
+
+    // Metadata may have loaded before this script ran
+    if (audio.readyState >= 1) audio.dispatchEvent(new Event('loadedmetadata'));
+  });
+</script>

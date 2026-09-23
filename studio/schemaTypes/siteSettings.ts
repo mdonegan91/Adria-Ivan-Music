@@ -7,7 +7,6 @@ export const siteSettings = defineType({
   groups: [
     { name: 'general', title: 'General', default: true },
     { name: 'about', title: 'About' },
-    { name: 'contact', title: 'Contact' },
   ],
   fields: [
     defineField({
@@ -20,7 +19,7 @@ export const siteSettings = defineType({
     defineField({
       name: 'tagline',
       type: 'string',
-      description: 'Small line above the album title, e.g. "New album — pre-order now".',
+      description: 'Small line above the album title, e.g. "New album".',
       group: 'general',
     }),
     defineField({
@@ -60,7 +59,7 @@ export const siteSettings = defineType({
       name: 'about',
       title: 'About',
       type: 'array',
-      description: 'Shown in the About section on the home page. Leave empty to hide it.',
+      description: 'Shown on the About page.',
       group: 'about',
       of: [
         defineArrayMember({
@@ -73,30 +72,6 @@ export const siteSettings = defineType({
               { title: 'Bold', value: 'strong' },
             ],
           },
-        }),
-      ],
-    }),
-    defineField({
-      name: 'contactIntro',
-      title: 'Contact intro',
-      type: 'string',
-      group: 'contact',
-    }),
-    defineField({
-      name: 'contactEmails',
-      title: 'Contact emails',
-      type: 'array',
-      description: 'e.g. Booking, Press, Management.',
-      group: 'contact',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          name: 'contactEmail',
-          fields: [
-            defineField({ name: 'label', type: 'string', validation: (r) => r.required() }),
-            defineField({ name: 'email', type: 'email', validation: (r) => r.required() }),
-          ],
-          preview: { select: { title: 'label', subtitle: 'email' } },
         }),
       ],
     }),
