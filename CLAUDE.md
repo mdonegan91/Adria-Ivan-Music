@@ -25,6 +25,5 @@ Website for the musician Adria Ivan. It's a static Astro site with Sanity for co
 
 ## Open TODOs
 - Real release date and Bandcamp pre-order URL (in Sanity, or `fallback.ts` until then)
-- A real MP3 for the home-page player (`song` on the release; `songUrl`/`songTitle` in `fallback.ts` until then). `public/audio/placeholder.mp3` is generated chords.
 - About text
 - Domain: update `site` in `astro.config.mjs`

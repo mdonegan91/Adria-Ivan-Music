@@ -24,8 +24,8 @@ export const fallbackRelease: Release = {
   description: null,
   bandcampUrl: 'https://adriaivan.bandcamp.com', // TODO: real pre-order URL
   ctaLabel: 'Pre-order',
-  songUrl: '/audio/placeholder.mp3', // TODO: a real song (or preview clip); the placeholder is generated chords
-  songTitle: 'Song Title', // TODO
+  songUrl: '/audio/die-tryin.mp3', // MP3 (VBR V0) converted from the master WAV
+  songTitle: 'Die Tryin',
   coverUrl: null, // null → uses /public/images/album-cover.*
   coverAlt:
     'Engraved illustration of two armored knights grappling over a flowering rose branch, framed by vines.',
