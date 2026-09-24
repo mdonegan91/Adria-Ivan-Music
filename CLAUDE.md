@@ -19,7 +19,7 @@ Website for the musician Adria Ivan. It's a static Astro site with Sanity for co
 - Use the CSS tokens in `src/styles/global.css` (`--paper`, `--ink`, `--ink-soft`, `--paper-light`, `--rule`). Don't hard-code colors.
 - Fonts: Instrument Serif (`--font-serif`) for display, meaning names, titles and venues. Instrument Sans (`--font-sans`) for body text. Labels and nav are sans, 500 weight, uppercase, letter-spacing about 0.14em.
 - Reuse the shared classes: `.wrap`, `.eyebrow`, `.page-title`, `.button`, `.prose`.
-- The cover's background is flattened to exactly `--paper`, so the artwork blends into the page. Don't add borders or shadows to it. If you replace the cover, flatten its background the same way. `public/images/about-frame.jpg` is a crop of the cover's engraved frame (used on the About page), so re-crop it too.
+- The cover's background is flattened to exactly `--paper` (`#f6eed7`, chosen so JPEG/WebP decode it exactly), so the artwork blends into the page. Don't add borders or shadows to it. If you replace the cover, flatten its background the same way. `public/images/about-frame.jpg` is a crop of the cover's engraved frame (used on the About page), so re-crop it too.
 - The look is quiet and editorial: hairline rules, generous space, no rounded corners, no gradients, no extra accent colors.
 - On the home page, the pre-order button is the main action. Keep it above the fold on mobile if possible.
 

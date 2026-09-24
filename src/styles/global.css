@@ -4,8 +4,8 @@
 
 /* Palette sampled directly from the album art */
 :root {
-  --paper: #ac9683;       /* cover background */
-  --paper-light: #c2af9d; /* hover / subtle fills */
+  --paper: #f6eed7;       /* cover background (cream) */
+  --paper-light: #fbf7ee; /* hover / subtle fills */
   --ink: #452b13;         /* engraving ink */
   --ink-soft: #5e4128;    /* secondary text */
   --rule: color-mix(in srgb, var(--ink) 40%, transparent);

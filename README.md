@@ -57,10 +57,10 @@ The palette is sampled from the album art:
 
 | Token           | Hex       | Use                             |
 | --------------- | --------- | ------------------------------- |
-| `--paper`       | `#ac9683` | page background (matches cover) |
+| `--paper`       | `#f6eed7` | page background (matches cover) |
 | `--ink`         | `#452b13` | text, buttons, rules            |
 | `--ink-soft`    | `#5e4128` | secondary text                  |
-| `--paper-light` | `#c2af9d` | form field fills                |
+| `--paper-light` | `#fbf7ee` | hover / subtle fills            |
 
 The fonts are self-hosted through Fontsource:
 - **Instrument Serif**: display type, including the name, titles and venues. It's a condensed, contemporary serif that nods to the engraving without being period costume.
